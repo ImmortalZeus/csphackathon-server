@@ -1,0 +1,5 @@
+*.sqlite3
+__pycache__
+./mainpage/checkerpy/
+./mainpage/checkercpp/
+./mainpage/static/resources/

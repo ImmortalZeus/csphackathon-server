@@ -1,0 +1,97 @@
+.ranktable th, .ranktable td {
+    font-weight: bold;
+    border: 2px inset;
+}
+
+.ranktable th {
+    background-color: #008dca;
+    color: #fff;
+}
+
+.ranktable td {
+  color: black;
+}
+
+#container {
+  margin: 0px 40px;
+  padding:0;
+  background-color: white;
+  overflow: hidden;
+}
+
+#rankdiv {
+  margin:0;
+  padding:0;
+  position: relative;
+  overflow: auto;
+}
+
+.index {
+  width: 20px;
+  text-align: center;
+}
+
+.contestant {
+  width: 150px;
+  text-align: left;
+}
+
+.score {
+  width: 80px;
+  text-align: center;
+}
+
+.penalty {
+  width: 80px;
+  text-align: center;
+}
+
+.problem {
+  min-width: 95px;
+  text-align: center;
+}
+
+.problem span {
+  font-size: 10px;
+  margin-left: 3px;
+}
+
+.first-ac {
+  background-color: #90ee90;
+}
+
+.accepted {
+  color: #0a0 !important;
+}
+
+.unaccepted {
+  color: red !important;
+}
+
+.IGM {
+  color: #e60000 !important;
+}
+
+.GM {
+  color: #ff3333 !important;
+}
+
+.IM {
+  color: #ffa500 !important;
+}
+
+.CM {
+  color: #9400d3 !important;
+}
+
+.Expert {
+  color: #0000ff !important;
+}
+
+.Unrated {
+  color: inherit;
+}
+
+.firstac {
+  background-color: #92ee91 !important;
+}

@@ -1,0 +1,27 @@
+{
+    "contest": "CSP Hackathon 2023",
+    "start": {
+        "second": 0,
+        "minute": 0,
+        "hour": 15,
+        "date": 3,
+        "month": 8,
+        "year": 2023
+    },
+    "freeze": {
+        "second": 0,
+        "minute": 0,
+        "hour": 16,
+        "date": 3,
+        "month": 8,
+        "year": 2024
+    },
+    "end": {
+        "second": 0,
+        "minute": 0,
+        "hour": 17,
+        "date": 3,
+        "month": 8,
+        "year": 2024
+    }
+}

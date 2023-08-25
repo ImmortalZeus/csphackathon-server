@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+  Contest - {{ contest }}
+{% endblock %}
+
+{% block body %}
+  <div class="d-flex flex-row jumbotron">
+      <div style="display:inline-block">
+        <embed class="pdf" type="application/pdf" src="{% static 'resources/Problemset.pdf' %}" width="820px" height="550px">
+      </div>
+      <div style="display:inline-block; padding-top: 10px; padding-left: 10px; vertical-align: top; width: 500px; font-size: 20px; line-height: 30px">
+        <select id="selectproblem" style="width: inherit; border-width: 2px; border-radius: 7px;">
+          <option value="" disabled selected>Chọn bài</option>
+          {% for problem in problemset %}
+            <option value="{{ problem.name }}">{{ problem.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+  </div>
+  <script>
+    document.body.onbeforeunload = function(){$("#selectproblem").prop('selectedIndex', 0)};
+    function resizetextarea(textField)
+    {
+      textField.style.height = 'auto';
+      if (textField.clientHeight < textField.scrollHeight)
+      {
+        textField.style.height = textField.scrollHeight + "px";
+        if (textField.clientHeight < textField.scrollHeight)
+        {
+          textField.style.height = (textField.scrollHeight * 2 - textField.clientHeight) + "px";
+        }
+      }
+    }
+    let problemset2 = {{ problemset2|safe }}
+    $("#selectproblem").on("change", function(){
+      while($("#selectproblem").next().length > 0) $("#selectproblem").next().remove()
+      let problem = problemset2.find(x => x.name == this.value)
+      let newel = `
+      <div>
+      <div style="width: 530px; height: auto; max-height: 440px; margin:10px 0; overflow-y: auto;">
+      `;
+      for(let i = 0; i < problem.testnum; i++)
+      {
+        newel += `<textarea type="text" testcase="${i + 1}" placeholder="Nhập đáp án test ${i + 1}" style="font-size: 17px; line-height: 25px; width: 500px; max-width: 500px; margin:10px 0; border-width: 2px; border-radius: 7px; resize: none; overflow-y: hidden; overflow-x: auto; white-space: nowrap;" oninput="resizetextarea(this);"></textarea>`;
+      }
+      newel += `</div>`;
+      newel += `<button class="btn btn-sm btn-warning" id="submit" onclick="onClick(this)" style="font-size: 18px; line-height: 30px; margin:10px 0; border-width: 2px; border-radius: 7px;">Nộp bài</button>`;
+      newel += `</div>`;
+      $("#selectproblem").after(newel)
+    });
+    var socket = io.connect();
+
+    socket.on("connect", () => {
+    });
+    
+    socket.on("disconnect", (reason) => {
+      if (reason === "io server disconnect") {
+        // the disconnection was initiated by the server, you need to reconnect manually
+        socket.connect();
+      }
+      // else the socket will automatically try to reconnect
+    });
+    
+    socket.on("returnscore", (response) => {
+      if(response.error)
+      {
+        swal({
+          title : response.error,
+          //text : json.message,
+          icon : "error",
+          })
+        }
+        else
+        {
+          $.notify(`Chấm bài thành công !\nKết quả :\n   Điểm : ${response.tscore}\n   Penalty:${response.penalty}`, {className: "success", autoHideDelay: 4000, encode: false});
+        }
+      });
+      function onClick($this) {
+        let ans = {}
+        $($this).prev().children().each(function(idx, val){
+          if($(val).prop("tagName") == "TEXTAREA")
+          {
+            ans[$(val).attr("testcase")] = $(val).val().trim();
+          }
+        });
+        swal({
+          title : "Bạn có chắc muốn nộp bài ?",
+          //text : json.message,
+          icon : "info",
+          buttons: {
+            cancel: {
+                text: "Quay lại",
+                value: false,
+                visible: true,
+                className: "",
+                closeModal: true,
+              },
+              confirm: {
+                text: "OK",
+                value: true,
+                visible: true,
+                className: "",
+                closeModal: true
+              }
+            }
+          }).then(function (e) {
+            if(e)
+            {
+              socket.emit("submit", {
+                "problem": $($this).parent().prev().val(), // tên bài
+                "anscpp": Object.values(ans).join('\n').trim(),
+                "anspy": Object.values(ans),
+                "sessionid": "{{ request.session.session_key }}" // cái này trick :v
+              });
+              $.notify("Nộp bài thành công !", {className: "success", autoHideDelay: 4000, encode: false});
+            }
+        });
+      }
+  </script>
+{% endblock %}
