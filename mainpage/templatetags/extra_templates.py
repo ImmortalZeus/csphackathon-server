@@ -16,7 +16,6 @@ def index(indexable, i):
 
 @register.filter
 def get_item(dictionary, key):
-    key -= 1
     key = str(key)
     if key in dictionary :
         return dictionary[key]
